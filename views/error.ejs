@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Error | Discord Bot Dashboard</title>
+  <style>
+    :root {
+      --discord-blue: #5865F2;
+      --discord-green: #57F287;
+      --discord-yellow: #FEE75C;
+      --discord-red: #ED4245;
+      --discord-dark: #36393F;
+      --discord-darker: #2F3136;
+      --discord-darkest: #202225;
+      --discord-light: #FFFFFF;
+      --discord-muted: #B9BBBE;
+      --discord-border: #23272A;
+    }
+    body {
+      background: linear-gradient(135deg, var(--discord-darkest) 0%, var(--discord-darker) 100%);
+      color: var(--discord-light);
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+    }
+    .bg-discord-dark { background: var(--discord-dark); }
+    .bg-discord-darker { background: var(--discord-darker); }
+    .bg-discord-darkest { background: var(--discord-darkest); }
+    .bg-discord-blue { background: var(--discord-blue); }
+    .bg-discord-blue-hover { background: #4752C4; }
+    .text-discord-blue { color: var(--discord-blue); }
+    .text-discord-light { color: var(--discord-light); }
+    .text-discord-muted { color: var(--discord-muted); }
+    .text-discord-red { color: var(--discord-red); }
+    .border-discord-border { border-color: var(--discord-border); }
+    .rounded { border-radius: 0.5rem; }
+    .rounded-full { border-radius: 9999px; }
+    .shadow-lg { box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+    .hover\:bg-discord-dark-hover:hover { background: #23272A; }
+    .transition-colors { transition: background 0.2s, color 0.2s; }
+    .font-bold { font-weight: 700; }
+    .font-medium { font-weight: 500; }
+    .truncate { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .group:hover .group-hover\:text-discord-light { color: var(--discord-light); }
+    .w-8 { width: 2rem; }
+    .h-8 { height: 2rem; }
+    .w-10 { width: 2.5rem; }
+    .h-10 { height: 2.5rem; }
+    .w-12 { width: 3rem; }
+    .h-12 { height: 3rem; }
+    .mr-1 { margin-right: 0.25rem; }
+    .mr-2 { margin-right: 0.5rem; }
+    .mr-3 { margin-right: 0.75rem; }
+    .ml-3 { margin-left: 0.75rem; }
+    .p-4 { padding: 1rem; }
+    .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+    .px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
+    .px-4 { padding-left: 1rem; padding-right: 1rem; }
+    .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+    .rounded-l-md { border-radius: 0.375rem 0 0 0.375rem; }
+    .rounded-r-md { border-radius: 0 0.375rem 0.375rem 0; }
+    .border { border-width: 1px; }
+    .focus\:outline-none:focus { outline: none; }
+    .focus\:ring-2:focus { box-shadow: 0 0 0 2px var(--discord-blue); }
+    .focus\:ring-discord-blue:focus { box-shadow: 0 0 0 2px var(--discord-blue); }
+    .hover\:opacity-80:hover { opacity: 0.8; }
+    .hover\:underline:hover { text-decoration: underline; }
+    .bg-discord-red\/20 { background: rgba(237,66,69,0.2); }
+    .border-discord-red\/30 { border-color: rgba(237,66,69,0.3); }
+  </style>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+</head>
+<body class="bg-discord-dark text-white">
+  <div class="min-h-screen flex flex-col items-center justify-center p-4">
+    <div class="max-w-md w-full bg-discord-darker rounded-lg shadow-xl overflow-hidden">
+      <div class="p-6 sm:p-8">
+        <div class="flex justify-center mb-6">
+          <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-discord-red">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+        </div>
+        
+        <h1 class="text-2xl font-bold text-center mb-2">Error</h1>
+        <p class="text-discord-muted text-center mb-8"><%= message %></p>
+        
+        <div class="bg-discord-darkest rounded-md p-4 mb-6 font-mono text-sm overflow-x-auto">
+          <%= error.message %>
+          <% if (error.stack) { %>
+            <pre class="mt-2 text-discord-muted text-xs"><%= error.stack %></pre>
+          <% } %>
+        </div>
+        
+        <div class="flex justify-center">
+          <a 
+            href="<%= locals.returnTo || '/dashboard' %>" 
+            class="bg-discord-blue hover:bg-discord-blue-hover text-white font-medium py-2 px-4 rounded-md transition-colors duration-200"
+          >
+            Go Back
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

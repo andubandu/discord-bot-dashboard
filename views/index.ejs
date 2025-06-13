@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Discord Bot Dashboard - Login</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            discord: {
+              blue: '#5865F2',
+              green: '#57F287',
+              yellow: '#FEE75C',
+              red: '#ED4245',
+              dark: '#36393F',
+              darker: '#2F3136',
+              darkest: '#202225'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-discord-dark text-white font-sans">
+  <div class="min-h-screen flex flex-col items-center justify-center p-4">
+    <div class="max-w-md w-full bg-discord-darker rounded-lg shadow-xl overflow-hidden">
+      <div class="p-6 sm:p-8">
+        <div class="flex justify-center mb-6">
+          <div class="w-16 h-16 bg-discord-blue rounded-full flex items-center justify-center">
+            <svg class="w-8 h-8 text-white" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          </div>
+        </div>
+        
+        <h1 class="text-2xl font-bold text-center mb-2">Discord Bot Dashboard</h1>
+        <p class="text-gray-400 text-center mb-8">Manage your Discord bot securely</p>
+        
+        <% if (locals.error) { %>
+          <div class="bg-red-500/10 border border-red-500/30 rounded-md p-4 mb-6">
+            <p class="text-red-500"><%= error %></p>
+          </div>
+        <% } %>
+        
+        <form action="/connect" method="POST" class="space-y-6">
+          <div>
+            <label for="token" class="block text-sm font-medium text-gray-400 mb-2">
+              Bot Token
+            </label>
+            <input
+              type="password"
+              id="token"
+              name="token"
+              required
+              class="w-full px-4 py-3 bg-discord-darkest border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-discord-blue focus:border-transparent"
+              placeholder="Enter your Discord bot token"
+            >
+            <p class="mt-2 text-xs text-gray-500">
+              Your token is stored securely in an HTTP-only cookie.
+            </p>
+          </div>
+          
+          <button
+            type="submit"
+            class="w-full bg-discord-blue hover:bg-opacity-90 text-white font-medium py-3 px-4 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-discord-blue focus:ring-offset-discord-darker"
+          >
+            Connect
+          </button>
+        </form>
+        
+        <div class="mt-8 text-center">
+          <p class="text-sm text-gray-400">
+            Need a bot token? Visit the
+            <a href="https://discord.com/developers/applications" target="_blank" rel="noopener noreferrer" class="text-discord-blue hover:underline">
+              Discord Developer Portal
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script src="/js/login.js"></script>
+</body>
+</html>

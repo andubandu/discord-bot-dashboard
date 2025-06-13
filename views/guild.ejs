@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %> | Discord Bot Dashboard</title>
+  <style>
+    :root {
+      --discord-blue: #5865F2;
+      --discord-green: #57F287;
+      --discord-yellow: #FEE75C;
+      --discord-red: #ED4245;
+      --discord-dark: #36393F;
+      --discord-darker: #2F3136;
+      --discord-darkest: #202225;
+      --discord-light: #FFFFFF;
+      --discord-muted: #B9BBBE;
+      --discord-border: #23272A;
+    }
+    body {
+      background: linear-gradient(135deg, var(--discord-darkest) 0%, var(--discord-darker) 100%);
+      color: var(--discord-light);
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+    }
+    .bg-discord-dark { background: var(--discord-dark); }
+    .bg-discord-darker { background: var(--discord-darker); }
+    .bg-discord-darkest { background: var(--discord-darkest); }
+    .bg-discord-blue { background: var(--discord-blue); }
+    .bg-discord-blue-hover { background: #4752C4; }
+    .text-discord-blue { color: var(--discord-blue); }
+    .text-discord-light { color: var(--discord-light); }
+    .text-discord-muted { color: var(--discord-muted); }
+    .text-discord-red { color: var(--discord-red); }
+    .border-discord-border { border-color: var(--discord-border); }
+    .rounded { border-radius: 0.5rem; }
+    .rounded-full { border-radius: 9999px; }
+    .shadow-lg { box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+    .hover\:bg-discord-dark-hover:hover { background: #23272A; }
+    .transition-colors { transition: background 0.2s, color 0.2s; }
+    .font-bold { font-weight: 700; }
+    .font-medium { font-weight: 500; }
+    .truncate { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .group:hover .group-hover\:text-discord-light { color: var(--discord-light); }
+    .w-8 { width: 2rem; }
+    .h-8 { height: 2rem; }
+    .w-10 { width: 2.5rem; }
+    .h-10 { height: 2.5rem; }
+    .w-12 { width: 3rem; }
+    .h-12 { height: 3rem; }
+    .mr-1 { margin-right: 0.25rem; }
+    .mr-2 { margin-right: 0.5rem; }
+    .mr-3 { margin-right: 0.75rem; }
+    .ml-3 { margin-left: 0.75rem; }
+    .p-4 { padding: 1rem; }
+    .py-1 { padding-top: 0.25rem; padding-bottom: 0.25rem; }
+    .px-2 { padding-left: 0.5rem; padding-right: 0.5rem; }
+    .px-4 { padding-left: 1rem; padding-right: 1rem; }
+    .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+    .rounded-l-md { border-radius: 0.375rem 0 0 0.375rem; }
+    .rounded-r-md { border-radius: 0 0.375rem 0.375rem 0; }
+    .border { border-width: 1px; }
+    .focus\:outline-none:focus { outline: none; }
+    .focus\:ring-2:focus { box-shadow: 0 0 0 2px var(--discord-blue); }
+    .focus\:ring-discord-blue:focus { box-shadow: 0 0 0 2px var(--discord-blue); }
+    .hover\:opacity-80:hover { opacity: 0.8; }
+    .hover\:underline:hover { text-decoration: underline; }
+    .bg-discord-red\/20 { background: rgba(237,66,69,0.2); }
+    .border-discord-red\/30 { border-color: rgba(237,66,69,0.3); }
+  </style>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body class="bg-discord-dark text-white">
+  <div class="flex h-screen overflow-hidden">
+    <%- include('partials/sidebar', { active: 'guilds' }) %>
+    
+    <main class="flex-1 overflow-hidden bg-discord-dark flex">
+      <div class="w-64 bg-discord-darker border-r border-discord-border flex flex-col overflow-hidden">
+        <div class="p-4 border-b border-discord-border">
+          <div class="flex items-center">
+            <% if (guild.icon) { %>
+              <img 
+                src="<%= guild.icon %>" 
+                alt="<%= guild.name %>" 
+                class="w-8 h-8 rounded-full mr-3"
+              >
+            <% } else { %>
+              <div class="w-8 h-8 rounded-full bg-discord-blue flex items-center justify-center mr-3">
+                <span class="text-sm font-bold"><%= guild.name.charAt(0) %></span>
+              </div>
+            <% } %>
+            <h1 class="text-lg font-bold truncate" title="<%= guild.name %>">
+              <%= guild.name %>
+            </h1>
+          </div>
+        </div>
+        
+        <div class="flex-1 overflow-y-auto p-2">
+          <% channels.forEach(category => { %>
+            <div class="mb-4">
+              <% if (category.name !== 'No Category') { %>
+                <h2 class="text-xs font-semibold text-discord-muted uppercase tracking-wider px-2 mt-4 mb-1">
+                  <%= category.name %>
+                </h2>
+              <% } %>
+              
+              <div class="space-y-0.5">
+                <% category.channels.forEach(channel => { %>
+                  <a 
+                    href="/dashboard/guilds/<%= guild.id %>/channels/<%= channel.id %>" 
+                    class="flex items-center px-2 py-1 rounded hover:bg-discord-dark-hover group transition-colors duration-200"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-discord-muted mr-1"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                    <span class="text-discord-muted group-hover:text-discord-light truncate" title="<%= channel.name %>">
+                      <%= channel.name %>
+                    </span>
+                  </a>
+                <% }); %>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+        
+        <div class="p-4 border-t border-discord-border text-sm">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-discord-muted">Members</span>
+            <span class="font-medium"><%= guild.memberCount %></span>
+          </div>
+          <a href="/dashboard/guilds/<%= guild.id %>/members" class="inline-block text-discord-blue hover:underline text-sm">
+            View members
+          </a>
+        </div>
+      </div>
+      
+      <div class="flex-1 overflow-y-auto">
+        <div class="container mx-auto p-6 max-w-4xl">
+          <header class="mb-8">
+            <div class="flex items-center">
+              <a href="/dashboard" class="text-discord-blue hover:underline mr-2">Dashboard</a>
+              <span class="text-discord-muted mx-2">/</span>
+              <h1 class="text-2xl font-bold"><%= guild.name %></h1>
+            </div>
+            <p class="text-discord-muted mt-2">
+              Select a channel from the sidebar to view messages
+            </p>
+          </header>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="bg-discord-darker rounded-lg shadow-lg p-6">
+              <h2 class="text-xl font-semibold mb-4">Server Information</h2>
+              
+              <div class="space-y-4">
+                <div class="flex">
+                  <div class="w-32 text-discord-muted">Server ID</div>
+                  <div class="font-medium"><%= guild.id %></div>
+                </div>
+                
+                <div class="flex">
+                  <div class="w-32 text-discord-muted">Owner</div>
+                  <div class="font-medium">ID: <%= guild.ownerId %></div>
+                </div>
+                
+                <div class="flex">
+                  <div class="w-32 text-discord-muted">Members</div>
+                  <div class="font-medium"><%= guild.memberCount %></div>
+                </div>
+                
+                <div class="flex">
+                  <div class="w-32 text-discord-muted">Channels</div>
+                  <div class="font-medium">
+                    <%= channels.reduce((total, category) => total + category.channels.length, 0) %>
+                  </div>
+                </div>
+                
+                <% if (guild.description) { %>
+                  <div class="flex">
+                    <div class="w-32 text-discord-muted">Description</div>
+                    <div class="font-medium"><%= guild.description %></div>
+                  </div>
+                <% } %>
+              </div>
+            </div>
+            
+            <div class="bg-discord-darker rounded-lg shadow-lg p-6">
+              <h2 class="text-xl font-semibold mb-4">Quick Actions</h2>
+              
+              <div class="space-y-4">
+                <a href="/dashboard/guilds/<%= guild.id %>/members" class="block w-full bg-discord-dark hover:bg-discord-dark-hover text-white font-medium py-3 px-4 rounded-md transition-colors duration-200 text-center">
+                  View Server Members
+                </a>
+                
+                <button id="btn-send-test" class="block w-full bg-discord-blue hover:bg-discord-blue-hover text-white font-medium py-3 px-4 rounded-md transition-colors duration-200">
+                  Send Test Message
+                </button>
+                
+                <button id="btn-refresh-channels" class="block w-full bg-discord-dark hover:bg-discord-dark-hover text-white font-medium py-3 px-4 rounded-md transition-colors duration-200">
+                  Refresh Channels
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <div class="bg-discord-darker rounded-lg shadow-lg p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4">Command Console</h2>
+            
+            <form id="command-form" class="space-y-4">
+              <div>
+                <label for="command-channel" class="block text-sm font-medium text-discord-muted mb-2">Target Channel</label>
+                <select id="command-channel" name="channelId" class="w-full px-3 py-2 bg-discord-darkest border border-discord-border rounded-md">
+                  <% channels.forEach(category => { %>
+                    <% if (category.channels.length > 0) { %>
+                      <optgroup label="<%= category.name %>">
+                        <% category.channels.forEach(channel => { %>
+                          <option value="<%= channel.id %>"><%= channel.name %></option>
+                        <% }); %>
+                      </optgroup>
+                    <% } %>
+                  <% }); %>
+                </select>
+              </div>
+              
+              <div>
+                <label for="command-input" class="block text-sm font-medium text-discord-muted mb-2">Command</label>
+                <input 
+                  type="text" 
+                  id="command-input" 
+                  name="command" 
+                  class="w-full px-3 py-2 bg-discord-darkest border border-discord-border rounded-md"
+                  placeholder="Enter command (e.g. !help)"
+                >
+              </div>
+              
+              <button 
+                type="submit" 
+                class="bg-discord-blue hover:bg-discord-blue-hover text-white font-medium py-2 px-4 rounded-md transition-colors duration-200"
+              >
+                Execute Command
+              </button>
+            </form>
+            
+            <div class="mt-4">
+              <h3 class="text-sm font-medium text-discord-muted mb-2">Command Result</h3>
+              <div id="command-result" class="h-24 overflow-y-auto bg-discord-darkest rounded-md p-3 text-sm font-mono">
+                <div class="text-discord-muted">Execute a command to see results</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const socket = io();
+      const commandForm = document.getElementById('command-form');
+      const commandResult = document.getElementById('command-result');
+      const btnSendTest = document.getElementById('btn-send-test');
+      const btnRefreshChannels = document.getElementById('btn-refresh-channels');
+      
+      socket.emit('authenticate', { token: '<%= locals.token %>' });
+      
+      commandForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const formData = new FormData(commandForm);
+        const data = {
+          command: formData.get('command'),
+          channelId: formData.get('channelId')
+        };
+        
+        if (!data.command) {
+          showCommandResult('Please enter a command', 'error');
+          return;
+        }
+        
+        try {
+          showCommandResult(`Executing: ${data.command}...`, 'info');
+          
+          const response = await fetch('/api/execute-command', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+          });
+          
+          const result = await response.json();
+          
+          if (response.ok) {
+            showCommandResult(`Command executed successfully. Check the channel for bot's response.`, 'success');
+          } else {
+            showCommandResult(`Error: ${result.error}`, 'error');
+          }
+        } catch (error) {
+          showCommandResult(`Error: ${error.message}`, 'error');
+        }
+      });
+      
+      function showCommandResult(message, type = 'info') {
+        const now = new Date().toLocaleTimeString();
+        const colorClass = type === 'success' 
+          ? 'text-discord-green' 
+          : type === 'error' 
+            ? 'text-discord-red' 
+            : type === 'info'
+              ? 'text-discord-blue'
+              : 'text-discord-muted';
+        
+        const resultEntry = document.createElement('div');
+        resultEntry.className = colorClass;
+        resultEntry.textContent = `[${now}] ${message}`;
+        
+        commandResult.innerHTML = '';
+        commandResult.appendChild(resultEntry);
+      }
+      
+      btnSendTest.addEventListener('click', async () => {
+        const channelSelect = document.getElementById('command-channel');
+        const channelId = channelSelect.value;
+        
+        if (!channelId) {
+          showCommandResult('Please select a channel', 'error');
+          return;
+        }
+        
+        try {
+          const response = await fetch(`/api/channels/${channelId}/messages`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              content: 'Test Message'
+            })
+          });
+          
+          const result = await response.json();
+          
+          if (response.ok) {
+            showCommandResult(`Test message sent to #${channelSelect.options[channelSelect.selectedIndex].text}`, 'success');
+          } else {
+            showCommandResult(`Error: ${result.error}`, 'error');
+          }
+        } catch (error) {
+          showCommandResult(`Error: ${error.message}`, 'error');
+        }
+      });
+      
+      btnRefreshChannels.addEventListener('click', () => {
+        window.location.reload();
+      });
+    });
+  </script>
+</body>
+</html>
